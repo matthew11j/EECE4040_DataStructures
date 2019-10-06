@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-const int threshold = 10;
+//const int threshold = 10;
 int mergeCounter = 0;
 int quickCounter = 0;
 
@@ -20,20 +20,19 @@ public:
         *y = temp;
     }
 
-    void insertionSort(int arr[], int x)
+    void insertionSort(int arr[], int l, int r)
     {
-        int temp;
-        for (int i = 1; i < x; i++)
-        {
-            temp = arr[i];
-            int j = i - 1;
-            while (j >= 0 && arr[j] > temp)
-            {
-                arr[j + 1] = arr[j];
-                j--;
-            }
-            arr[j + 1] = temp;
-        }
+    for (int i = l; i <= r; i++)
+    	{
+    		int temp = arr[i];
+    		int j = i;
+    		while (j >= l && temp < arr[j - 1])
+    		{
+    			arr[j] = arr[j - 1];
+    			j--;
+    		}
+    		arr[j] = temp;
+    	}
     }
 
     /*
@@ -86,7 +85,7 @@ public:
         }
     }
 
-    void mergeSort(int arr[], int left, int right)
+    void mergeSort(int arr[], int left, int right, int threshold)
     {
         if (left < right)
         {
@@ -96,10 +95,10 @@ public:
             }
             else
             {
-                mergeCount++;
+                mergeCounter++;
                 int middle = 1 + (right + 1) / 2;
-                mergeSort(arr, left, right);
-                mergeSort(arr, middle + 1, right);
+                mergeSort(arr, left, right, threshold);
+                mergeSort(arr, middle + 1, right, threshold);
                 merge(arr, left, middle, right);
             }
         }
@@ -121,7 +120,7 @@ public:
         return (i + 1);
     }
 
-    void quickSort(int arr[], int low, int high)
+    void quickSort(int arr[], int low, int high, int threshold)
     {
         if (low < high)
         {
@@ -133,10 +132,11 @@ public:
             {
                 quickCounter++;
                 int p = partition(arr, low, high);
-                quickSort(arr, low, p - 1);
-                quickSort(arr, p + 1, high);
+                quickSort(arr, low, p - 1, threshold);
+                quickSort(arr, p + 1, high, threshold);
             }
         }
+    }
     /*
       Display documentation describing program
     */
@@ -172,7 +172,7 @@ public:
 
         // Get user input for threshhold value
         do {
-            cout << "Please enter the threshold value.\n" << endl;
+            cout << "Please enter the threshold value." << endl;
             cin >> threshold;
             if (cin.good()) {
                 arr[0] = threshold;
@@ -187,7 +187,7 @@ public:
 
         // Get user input for size of the list to sort
         do {
-            cout << "Please enter the size of the list to sort." << endl;
+            cout << "\nPlease enter the size of the list to sort." << endl;
             cin >> listSize;
             if (cin.good()) {
                 if (listSize > 1 && listSize < 16) {
@@ -292,8 +292,6 @@ public:
 int main() {
     int inputArray[5];
     int threshold, size, largeList, initializationType, display, random;
-    int mergeCnt = 0;
-    int quickCnt = 0;
     srand (time(NULL));
     bool play = true;
     bool valid = false;
@@ -335,7 +333,14 @@ int main() {
             cout << "Unsorted Array..." << endl;
             sort.displayArray(list, size);
         }
-
+        int list2[size];
+        for (int j = 0; j < size; j++) {
+            list2[j] = list [j];
+        }
+        sort.mergeSort(list, 0, size - 1, threshold);
+        sort.displayArray(list, size);
+        sort.quickSort(list2, 0, size - 1, threshold);
+        sort.displayArray(list2, size);
         play = sort.playAgain();
     }
     return 0;
