@@ -3,9 +3,140 @@
 #include <iostream>
 using namespace std;
 
+const int threshold = 10;
+int mergeCounter = 0;
+int quickCounter = 0;
+
 class Sort
 {
 public:
+    /*
+    Swaps too elements in the array
+    */
+    void swap(int *x, int *y)
+    {
+        int temp = *x;
+        *x = *y;
+        *y = temp;
+    }
+
+    void insertionSort(int arr[], int x)
+    {
+        int temp;
+        for (int i = 1; i < x; i++)
+        {
+            temp = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > temp)
+            {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = temp;
+        }
+    }
+
+    /*
+    Merges two arrays into one
+    */
+    void merge(int arr[], int left, int middle, int right)
+    {
+        int n1 = middle - left + 1;
+        int n2 = right - middle;
+        int L[n1], R[n2];
+
+        for (int i = 0; i < n1; i++)
+        {
+            L[i] = arr[left + i];
+        }
+        for (int j = 0; j < n2; j++)
+        {
+            R[j] = arr[middle + j + 1];
+        }
+
+        int n = 0;
+        int m = 0;
+        int k = 0;
+
+        while (n < n1 && m < n2)
+        {
+            if (L[n] <= R[m])
+            {
+                arr[k] = L[n];
+                n++;
+            }
+            else
+            {
+                arr[k] = R[m];
+                m++;
+            }
+            k++;
+        }
+        while (n < n1)
+        {
+            arr[k] = L[n];
+            n++;
+            k++;
+        }
+        while (m < n2)
+        {
+            arr[k] = R[m];
+            m++;
+            k++;
+        }
+    }
+
+    void mergeSort(int arr[], int left, int right)
+    {
+        if (left < right)
+        {
+            if (left + right <= threshold)
+            {
+                insertionSort(arr, left, right);
+            }
+            else
+            {
+                mergeCount++;
+                int middle = 1 + (right + 1) / 2;
+                mergeSort(arr, left, right);
+                mergeSort(arr, middle + 1, right);
+                merge(arr, left, middle, right);
+            }
+        }
+    }
+
+    int partition(int arr[], int low, int high)
+    {
+        int pivot = arr[high];
+        int i = (low - 1);
+        for (int j = low; j < high; j++)
+        {
+            if (arr[j] < pivot)
+            {
+                swap(&arr[i], &arr[j]);
+                i++;
+            }
+        }
+        swap(&arr[i + 1], &arr[high]);
+        return (i + 1);
+    }
+
+    void quickSort(int arr[], int low, int high)
+    {
+        if (low < high)
+        {
+            if (high + low <= threshold)
+            {
+                insertionSort(arr, low, high);
+            }
+            else
+            {
+                quickCounter++;
+                int p = partition(arr, low, high);
+                quickSort(arr, low, p - 1);
+                quickSort(arr, p + 1, high);
+            }
+        }
     /*
       Display documentation describing program
     */
