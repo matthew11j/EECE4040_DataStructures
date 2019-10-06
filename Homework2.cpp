@@ -3,7 +3,6 @@
 #include <iostream>
 using namespace std;
 
-//const int threshold = 10;
 int mergeCounter = 0;
 int quickCounter = 0;
 
@@ -151,7 +150,7 @@ public:
       Display documentation describing program
     */
     void displayDocs() {
-        cout << endl << endl << endl; 
+        cout << endl << endl << endl;
         cout << "The purpose of this program is to allow for user testing" << endl;
         cout << "of Mergesort and Quicksort algorithms where Insertionsort" << endl;
         cout << "is used as a threshold sort." << endl << endl;
