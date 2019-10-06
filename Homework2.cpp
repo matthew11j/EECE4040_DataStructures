@@ -1,12 +1,7 @@
-//Names: Matthew Jackson, Charlie Staich
-//Tic Tac Toe Game
-//2 player game, first player to get 3 in a row wins.
+//Names: Matthew Jackson, Nathan Sucher
 
-#include <iostream>
 #include <iostream>
 using namespace std;
-
-// Returns true if s is a number else false
 
 class Sort
 {
