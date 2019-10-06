@@ -286,6 +286,7 @@ public:
         for (int i = 0; i < size; i++) {
             cout << "Value " << i << " is: " << arr[i] << endl;
         }
+        cout << endl;
     }
 };
 
@@ -337,10 +338,14 @@ int main() {
         for (int j = 0; j < size; j++) {
             list2[j] = list [j];
         }
+        cout << "Merge Sort..." << endl;
         sort.mergeSort(list, 0, size - 1, threshold);
         sort.displayArray(list, size);
+        cout << "Quick Sort..." << endl;
         sort.quickSort(list2, 0, size - 1, threshold);
         sort.displayArray(list2, size);
+        cout << "Merge Sort... " << mergeCounter << endl;
+        cout << "Quick Sort... " << quickCounter << endl;
         play = sort.playAgain();
     }
     return 0;
