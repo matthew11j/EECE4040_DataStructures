@@ -11,7 +11,7 @@ class Sort
 {
 public:
     /*
-    Swaps too elements in the array
+      Swaps two elements in the array
     */
     void swap(int *x, int *y)
     {
@@ -20,6 +20,9 @@ public:
         *y = temp;
     }
 
+    /*
+      Insertion sort algorithm
+    */
     void insertionSort(int arr[], int l, int r)
     {
     for (int i = l; i <= r; i++)
@@ -36,7 +39,7 @@ public:
     }
 
     /*
-    Merges two arrays into one
+      Merges two arrays into one
     */
     void merge(int arr[], int left, int middle, int right)
     {
@@ -85,6 +88,9 @@ public:
         }
     }
 
+    /*
+      Recursive Merge sort algorithm
+    */
     void mergeSort(int arr[], int left, int right, int threshold)
     {
         if (left < right)
@@ -120,6 +126,9 @@ public:
         return (i + 1);
     }
 
+    /*
+      Recursive Quick sort algorithm
+    */
     void quickSort(int arr[], int low, int high, int threshold)
     {
         if (low < high)
@@ -137,10 +146,12 @@ public:
             }
         }
     }
+
     /*
       Display documentation describing program
     */
     void displayDocs() {
+        cout << endl << endl << endl; 
         cout << "The purpose of this program is to allow for user testing" << endl;
         cout << "of Mergesort and Quicksort algorithms where Insertionsort" << endl;
         cout << "is used as a threshold sort." << endl << endl;
@@ -240,6 +251,7 @@ public:
         while (!valid) {
             cout << "\nWould you like to have the array displayed Yes[1] or No[0]?" << endl;
             cin >> display;
+            cout << endl;
             if (cin.good()) {
                 if (display == 1 || display == 0) {
                   arr[4] = display;
@@ -297,8 +309,8 @@ int main() {
     bool play = true;
     bool valid = false;
     Sort sort;
-    sort.displayDocs();
     while (play == true) {
+        sort.displayDocs();
         sort.getUserInput(inputArray);
         threshold = inputArray[0];
         size = inputArray[1];
@@ -317,7 +329,7 @@ int main() {
             int val;
             for (int i = 0; i < size; i++) {
               do {
-                  cout << "Please enter a value for the list. (int)" << endl;
+                  cout << "\nPlease enter a value for the list. (int)" << endl;
                   cin >> val;
                   if (cin.good()) {
                       list[i] = val;
@@ -328,24 +340,28 @@ int main() {
                       cout << "Invalid input" << endl;
                   }
               } while (!valid);
+              valid = false;
             }
         }
         if (largeList == 1 || display == 1){
-            cout << "Unsorted Array..." << endl;
+            cout << "\nUnsorted Array..." << endl;
             sort.displayArray(list, size);
         }
+
         int list2[size];
         for (int j = 0; j < size; j++) {
             list2[j] = list [j];
         }
-        cout << "Merge Sort..." << endl;
+        cout << "\nMerge Sort..." << endl;
         sort.mergeSort(list, 0, size - 1, threshold);
         sort.displayArray(list, size);
+
         cout << "Quick Sort..." << endl;
         sort.quickSort(list2, 0, size - 1, threshold);
         sort.displayArray(list2, size);
-        cout << "Merge Sort... " << mergeCounter << endl;
-        cout << "Quick Sort... " << quickCounter << endl;
+
+        cout << "Merge Sort Counter: " << mergeCounter << endl;
+        cout << "Quick Sort Counter: " << quickCounter << endl;
         play = sort.playAgain();
     }
     return 0;
