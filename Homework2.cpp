@@ -25,13 +25,13 @@ public:
     for (int i = l; i <= r; i++)
     	{
     		int temp = arr[i];
-    		int j = i;
-    		while (j >= l && temp < arr[j - 1])
+    		int j = i - 1;
+    		while (j >= 0 && temp < arr[j])
     		{
-    			arr[j] = arr[j - 1];
+    			arr[j + 1] = arr[j];
     			j--;
     		}
-    		arr[j] = temp;
+    		arr[j + 1] = temp;
     	}
     }
 
@@ -55,7 +55,7 @@ public:
 
         int n = 0;
         int m = 0;
-        int k = 0;
+        int k = left;
 
         while (n < n1 && m < n2)
         {
@@ -96,8 +96,8 @@ public:
             else
             {
                 mergeCounter++;
-                int middle = 1 + (right + 1) / 2;
-                mergeSort(arr, left, right, threshold);
+                int middle = left + (right - left) / 2;
+                mergeSort(arr, left, middle, threshold);
                 mergeSort(arr, middle + 1, right, threshold);
                 merge(arr, left, middle, right);
             }
@@ -108,12 +108,12 @@ public:
     {
         int pivot = arr[high];
         int i = (low - 1);
-        for (int j = low; j < high; j++)
+        for (int j = low; j <= high - 1; j++)
         {
             if (arr[j] < pivot)
             {
-                swap(&arr[i], &arr[j]);
                 i++;
+                swap(&arr[i], &arr[j]);
             }
         }
         swap(&arr[i + 1], &arr[high]);
