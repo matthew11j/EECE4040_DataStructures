@@ -24,17 +24,15 @@ public:
     */
     void insertionSort(int arr[], int l, int r)
     {
-    for (int i = l; i <= r; i++)
-    	{
-    		int temp = arr[i];
-    		int j = i - 1;
-    		while (j >= 0 && temp < arr[j])
-    		{
-    			arr[j + 1] = arr[j];
-    			j--;
-    		}
-    		arr[j + 1] = temp;
-    	}
+        for (int i = l; i <= r; i++) {
+      		int temp = arr[i];
+      		int j = i - 1;
+      		while (j >= 0 && temp < arr[j]) {
+      			arr[j + 1] = arr[j];
+      			j--;
+      		}
+      		arr[j + 1] = temp;
+      	}
     }
 
     /*
@@ -46,12 +44,10 @@ public:
         int n2 = right - middle;
         int L[n1], R[n2];
 
-        for (int i = 0; i < n1; i++)
-        {
+        for (int i = 0; i < n1; i++) {
             L[i] = arr[left + i];
         }
-        for (int j = 0; j < n2; j++)
-        {
+        for (int j = 0; j < n2; j++) {
             R[j] = arr[middle + j + 1];
         }
 
@@ -59,28 +55,22 @@ public:
         int m = 0;
         int k = left;
 
-        while (n < n1 && m < n2)
-        {
-            if (L[n] <= R[m])
-            {
+        while (n < n1 && m < n2) {
+            if (L[n] <= R[m]) {
                 arr[k] = L[n];
                 n++;
-            }
-            else
-            {
+            } else {
                 arr[k] = R[m];
                 m++;
             }
             k++;
         }
-        while (n < n1)
-        {
+        while (n < n1) {
             arr[k] = L[n];
             n++;
             k++;
         }
-        while (m < n2)
-        {
+        while (m < n2) {
             arr[k] = R[m];
             m++;
             k++;
@@ -88,18 +78,15 @@ public:
     }
 
     /*
-      Recursive Merge sort algorithm
+      Recursive Mergesort algorithm
     */
     void mergeSort(int arr[], int left, int right, int threshold)
     {
-        if (left < right)
-        {
-            if (left + right <= threshold)
-            {
+        if (left < right) {
+            if (left + right <= threshold) {
                 insertionSort(arr, left, right);
             }
-            else
-            {
+            else {
                 mergeCounter++;
                 int middle = left + (right - left) / 2;
                 mergeSort(arr, left, middle, threshold);
@@ -109,14 +96,15 @@ public:
         }
     }
 
+    /*
+      partition used for quickSort
+    */
     int partition(int arr[], int low, int high)
     {
         int pivot = arr[high];
         int i = (low - 1);
-        for (int j = low; j <= high - 1; j++)
-        {
-            if (arr[j] < pivot)
-            {
+        for (int j = low; j <= high - 1; j++) {
+            if (arr[j] < pivot) {
                 i++;
                 swap(&arr[i], &arr[j]);
             }
@@ -126,18 +114,15 @@ public:
     }
 
     /*
-      Recursive Quick sort algorithm
+      Recursive Quicksort algorithm
     */
     void quickSort(int arr[], int low, int high, int threshold)
     {
-        if (low < high)
-        {
-            if (high + low <= threshold)
-            {
+        if (low < high) {
+            if (high + low <= threshold) {
                 insertionSort(arr, low, high);
             }
-            else
-            {
+            else {
                 quickCounter++;
                 int p = partition(arr, low, high);
                 quickSort(arr, low, p - 1, threshold);
@@ -149,16 +134,17 @@ public:
     /*
       Display documentation describing program
     */
-    void displayDocs() {
+    void displayDocs()
+    {
         cout << endl << endl << endl;
         cout << "The purpose of this program is to allow for user testing" << endl;
         cout << "of Mergesort and Quicksort algorithms where Insertionsort" << endl;
         cout << "is used as a threshold sort." << endl << endl;
         cout << "The program will begin by asking the user for inputs to be" << endl;
         cout << "used in the program. These being:" << endl;
-        cout << "     Threshold Value" << endl << "     Size of sortable list" << endl;
-        cout << "     Whether the list should be created manually/automatically" << endl;
-        cout << "     Whether the list should be displayed or not" << endl << endl;
+        cout << "     -Threshold Value" << endl << "     -Size of sortable list" << endl;
+        cout << "     -Whether the list should be created manually/automatically" << endl;
+        cout << "     -Whether the list should be displayed or not" << endl << endl;
         cout << "After valid values are provided, the program will either create" << endl;
         cout << "an array of random numbers or the user will input list values depending" << endl;
         cout << "on their inputs. The display of the initialized unsorted list will be displayed " << endl;
@@ -169,13 +155,14 @@ public:
     }
 
     /*
-      Reveives user inputs necessary for rest of program
+      Receives user inputs necessary for rest of program
       i.e., Threshold value
             Size of sortable list
             Whether the list should be created manually/automatically
             Whether the list should be displayed or not
     */
-    void getUserInput(int arr[]) {
+    void getUserInput(int arr[])
+    {
         bool valid = false;
         bool largeList = false;
         int threshold, listSize, listCreation, display;
@@ -269,7 +256,8 @@ public:
     /*
       Asks user to play again, so the app has ability to loop
     */
-    bool playAgain() {
+    bool playAgain()
+    {
         bool play = false;
         bool invalidChoice = true;
         char answer;
@@ -293,7 +281,8 @@ public:
     /*
       Display array function
     */
-    void displayArray(int arr[], int size) {
+    void displayArray(int arr[], int size)
+    {
         for (int i = 0; i < size; i++) {
             cout << "Value " << i << " is: " << arr[i] << endl;
         }
@@ -321,11 +310,12 @@ int main() {
             initializationType = inputArray[3];
             display = inputArray[4];
         }
+        // listSize > 15 OR initializationType == Automatically fill list
         if (largeList == 1 || initializationType == 2){
             for (int i = 0; i < size; i++) {
                 list[i] = rand() % 100 + 1;
             }
-        } else if (initializationType == 1) {
+        } else if (initializationType == 1) { // User generated list
             // Get user input for each list value
             int val;
             for (int i = 0; i < size; i++) {
@@ -344,6 +334,7 @@ int main() {
               valid = false;
             }
         }
+        // Display unsorted list if listSize < 16 AND user chose to display list
         if (largeList != 1 && display == 1){
             cout << "\nUnsorted Array..." << endl;
             sort.displayArray(list, size);
@@ -354,17 +345,25 @@ int main() {
             list2[j] = list [j];
         }
 
+        // Mergesort on list
         sort.mergeSort(list, 0, size - 1, threshold);
+
+        // Quicksort on list2
         sort.quickSort(list2, 0, size - 1, threshold);
+
+        // Display unsorted list if listSize < 16 AND user chose to display list
         if (largeList != 1 && display == 1){
-            cout << "\nMerge Sort..." << endl;
+            cout << "Merge Sort..." << endl;
             sort.displayArray(list, size);
             cout << "Quick Sort..." << endl;
             sort.displayArray(list2, size);
         }
 
-        cout << "Merge Sort Counter: " << mergeCounter << endl;
+        // Display sort counts
+        cout << "\nMerge Sort Counter: " << mergeCounter << endl;
         cout << "Quick Sort Counter: " << quickCounter << endl;
+
+        // Asks user to play again (repeat process)
         play = sort.playAgain();
     }
     return 0;
