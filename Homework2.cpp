@@ -1,4 +1,5 @@
-//Names: Matthew Jackson, Nathan Sucher
+// Names: Matthew Jackson, Nathan
+// EECE 4040 - Homework 2
 
 #include <iostream>
 using namespace std;
