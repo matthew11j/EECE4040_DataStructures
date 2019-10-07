@@ -210,7 +210,7 @@ public:
                     valid = true;
                     largeList = true;
                 } else {
-                    cout << "Invalid input. [1-x]" << endl;
+                    cout << "Invalid input. [2-x]" << endl;
                     valid = false;
                 }
             } else {
@@ -261,7 +261,7 @@ public:
             } else {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid input" << endl;
+                cout << "Invalid input. [1] or [2]..." << endl;
             }
         }
     }
@@ -338,7 +338,7 @@ int main() {
                   } else {
                       cin.clear();
                       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                      cout << "Invalid input" << endl;
+                      cout << "Invalid input." << endl;
                   }
               } while (!valid);
               valid = false;
