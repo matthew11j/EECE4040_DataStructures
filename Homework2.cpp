@@ -204,19 +204,19 @@ public:
                     arr[1] = listSize;
                     arr[2] = 0;
                     valid = true;
-                } else if (listSize > 15 && listSize < 100) {
+                } else if (listSize > 15) {
                     arr[1] = listSize;
                     arr[2] = 1;
                     valid = true;
                     largeList = true;
                 } else {
-                    cout << "Invalid input. [2-40]" << endl;
+                    cout << "Invalid input. [1-x]" << endl;
                     valid = false;
                 }
             } else {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Invalid input. [2-40]" << endl;
+                cout << "Invalid input. [2-x]" << endl;
             }
         } while (!valid);
         // If list size larger than 15, skip the next two steps.
@@ -321,7 +321,7 @@ int main() {
         }
         if (largeList == 1 || initializationType == 2){
             for (int i = 0; i < size; i++) {
-                list[i] = rand() % 20 + 1;
+                list[i] = rand() % 100 + 1;
             }
         } else if (initializationType == 1) {
             // Get user input for each list value
