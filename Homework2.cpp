@@ -204,13 +204,13 @@ public:
                     arr[1] = listSize;
                     arr[2] = 0;
                     valid = true;
-                } else if (listSize > 15 && listSize < 100) {
+                } else if (listSize > 15) {
                     arr[1] = listSize;
                     arr[2] = 1;
                     valid = true;
                     largeList = true;
                 } else {
-                    cout << "Invalid input. [2-40]" << endl;
+                    cout << "Invalid input" << endl;
                     valid = false;
                 }
             } else {
@@ -248,15 +248,15 @@ public:
 
         // Get user input for whether or not to display array
         while (!valid) {
-            cout << "\nWould you like to have the array displayed Yes[1] or No[0]?" << endl;
+            cout << "\nWould you like to have the array displayed Yes[1] or No[2]?" << endl;
             cin >> display;
             cout << endl;
             if (cin.good()) {
-                if (display == 1 || display == 0) {
+                if (display == 1 || display == 2) {
                   arr[4] = display;
                   valid = true;
                 } else {
-                   cout << "Invalid input. [1] or [0]..." << endl;
+                   cout << "Invalid input. [1] or [2]..." << endl;
                 }
             } else {
                 cin.clear();
@@ -309,6 +309,8 @@ int main() {
     bool valid = false;
     Sort sort;
     while (play == true) {
+        mergeCounter = 0;
+        quickCounter = 0;
         sort.displayDocs();
         sort.getUserInput(inputArray);
         threshold = inputArray[0];
@@ -342,7 +344,7 @@ int main() {
               valid = false;
             }
         }
-        if (largeList == 1 || display == 1){
+        if (largeList != 1 && display == 1){
             cout << "\nUnsorted Array..." << endl;
             sort.displayArray(list, size);
         }
@@ -351,13 +353,15 @@ int main() {
         for (int j = 0; j < size; j++) {
             list2[j] = list [j];
         }
-        cout << "\nMerge Sort..." << endl;
-        sort.mergeSort(list, 0, size - 1, threshold);
-        sort.displayArray(list, size);
 
-        cout << "Quick Sort..." << endl;
+        sort.mergeSort(list, 0, size - 1, threshold);
         sort.quickSort(list2, 0, size - 1, threshold);
-        sort.displayArray(list2, size);
+        if (largeList != 1 && display == 1){
+            cout << "\nMerge Sort..." << endl;
+            sort.displayArray(list, size);
+            cout << "Quick Sort..." << endl;
+            sort.displayArray(list2, size);
+        }
 
         cout << "Merge Sort Counter: " << mergeCounter << endl;
         cout << "Quick Sort Counter: " << quickCounter << endl;
