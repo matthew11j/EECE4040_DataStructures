@@ -128,7 +128,7 @@ class Book
         }
     }
 
-    node* remove(node* root, Person tmpPerson) 
+    node* remove(node* root, string name) 
     {
         if (root == NULL)
         {
@@ -137,27 +137,17 @@ class Book
   
         // If the key to be deleted is smaller than the root's key, 
         // then it lies in left subtree 
-        if (tmpPerson.getLname() < root->data.getLname()) 
+        if (name < (root->data.getLname() + root->data.getFname())) 
         {
-            root->left = remove(root->left, tmpPerson); 
+            root->left = remove(root->left, name); 
         }
         // If the key to be deleted is greater than the root's key, 
         // then it lies in right subtree 
-        else if (tmpPerson.getLname() > root->data.getLname()) 
+        else if (name > (root->data.getLname() + root->data.getFname())) 
         {
-            root->right = remove(root->right, tmpPerson); 
+            root->right = remove(root->right, name); 
         }
-        else if (tmpPerson.getLname() == root->data.getLname())
-        {
-            if (tmpPerson.getFname() < root->data.getFname())
-            {
-                root->left = remove(root->left, tmpPerson); 
-            }
-            else if (tmpPerson.getFname() > root->data.getFname())
-            {
-                root->right = remove(root->right, tmpPerson);
-            }
-        }
+        
     
         // if key is same as root's key, then This is the node 
         // to be deleted 
@@ -185,7 +175,7 @@ class Book
             root->data = temp->data; 
     
             // Delete the inorder successor 
-            root->right = remove(root->right, temp->data); 
+            root->right = remove(root->right, (temp->data.getLname() + temp->data.getFname())); 
         } 
         return root; 
     }
@@ -199,34 +189,19 @@ class Book
         inorder(root->right);
     }
 
-    node* find(node* root, string fname, string lname) 
+    node* find(node* root, string name) 
     {
         if(root == NULL)
         {
             return NULL;
         }
-        else if (root->data.getLname() == lname && root->data.getFname() == fname)
+        else if(name < (root->data.getLname() + root->data.getFname()))
         {
-            return root;
+            return find(root->left, name);
         }
-        else if(lname < root->data.getLname())
+        else if(name > (root->data.getLname()+ root->data.getFname()))
         {
-            return find(root->left, fname, lname);
-        }
-        else if(lname > root->data.getLname())
-        {
-            return find(root->right, fname, lname);
-        }
-        else if (lname == root->data.getLname())
-        {
-            if (fname < root->data.getFname())
-            {
-                return find(root->left, fname, lname);
-            }
-            else if (fname > root->data.getFname())
-            {
-                return find(root->right, fname, lname);
-            }
+            return find(root->right, name);
         }
         else
         {
@@ -250,10 +225,13 @@ public:
         x = insert(tmpPerson, x);
     }
 
-    void remove(Person tmpPerson) 
+    void remove() 
     {
-        x = remove(x, tmpPerson);
-        cout << x->data.getLname() << " " << x->data.getFname() << endl;
+        string fname, lname;
+        cout<<"Enter first and last name to remove: ";
+        cin>>fname>>lname;
+        string person = lname + fname;
+        x = remove(x, person);
     }
 
     void display() 
@@ -265,10 +243,23 @@ public:
     Person search() 
     {
         string fname, lname;
-        cout<<"Enter first and last name to search:"<<endl;
+        cout<<"Enter first and last name to search: ";
         cin>>fname>>lname;
-        x = find(x, fname, lname);
+        string person = lname + fname;
+        x = find(x, person);
         return x->data;
+    }
+
+    void edit()
+    {
+        string fname, lname, mnumber;
+        cout<<"Enter first and last name to edit: ";
+        cin>>fname>>lname;
+        string person = lname + fname;
+        x = find(x, person);
+        cout<<"Enter the new number: ";
+        cin>>mnumber;
+        x->data.setMnumber(mnumber);
     }
 };
 
@@ -288,9 +279,12 @@ void menu(Book bstBook)
 {
     int choice;
     int exit = 0;
+    Person tmpPerson;
 
     do
     {
+        cout<<endl;
+        cout<<"-------------------"<<endl;
         cout<<"USER MENU"<<endl;
         cout<<"-------------------"<<endl;
         cout<<"1. Add User"<<endl;
@@ -298,11 +292,13 @@ void menu(Book bstBook)
         cout<<"3. Find User"<<endl;
         cout<<"4. Edit User"<<endl;
         cout<<"5. Display All Users"<<endl;
-        cout<<"6. Quit"<<endl;
+        cout<<"6. Save to Text File"<<endl;
+        cout<<"7. Restore from Text File"<<endl;
+        cout<<"8. Quit"<<endl;
 
         cin>>choice;
         
-        if (choice < 1 || choice > 6)
+        if (choice != 1 || choice != 2 || choice != 3 || choice != 4 || choice != 5 || choice != 6 || choice != 7 || choice != 8)
         {
             cout<<"Not a valid choice."<<endl;
             exit = 0;
@@ -312,22 +308,34 @@ void menu(Book bstBook)
             switch(choice)
             {
                 case 1:
-                    Person tmpPerson = addContact();
+                    tmpPerson = addContact();
                     bstBook.insert(tmpPerson);
                     cout<<"User Added!"<<endl;
+                    break;
                 case 2:
-                    //TODO
+                    bstBook.remove();
+                    break;
                 case 3:
-                    Person tmpPerson = bstBook.search();
-                    cout<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<" "<<tmpPerson.getMnumber()<<endl;
+                    tmpPerson = bstBook.search();
+                    cout<<"User: "<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<"     "<<tmpPerson.getMnumber()<<endl;
+                    break;
                 case 4:
-                    //TODO
+                    bstBook.edit();
+                    break;
                 case 5:
-                    cout<<"Last Name"<<"        "<<"First Name"<<"      "<<"Number"<<endl;
+                    cout<<"Last Name"<<"     "<<"First Name"<<"   "<<"Number"<<endl;
+                    cout<<"---------------------------------------------------------"<<endl;
                     bstBook.display();
+                    break;
                 case 6:
+                    //TODO
+                    break;
+                case 7:
+                    //TODO
+                    break;
+                case 8:
                     exit = 1;
-
+                    break;
             }
         }
     }while (exit == 0);
@@ -337,6 +345,5 @@ void menu(Book bstBook)
 int main()
 {
     Book bstBook;
-
     menu(bstBook);
 }
