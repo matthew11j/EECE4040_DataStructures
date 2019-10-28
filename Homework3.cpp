@@ -195,7 +195,7 @@ class Book
         if(root == NULL)
             return;
         inorder(root->left);
-        cout << root->data.getLname() << ", "<< root->data.getFname() <<" "<< root->data.getMnumber() << endl;
+        cout << root->data.getLname() << "      "<< root->data.getFname() <<"       "<< root->data.getMnumber() << endl;
         inorder(root->right);
     }
 
@@ -262,8 +262,11 @@ public:
         cout << endl;
     }
 
-    Person search(string fname, string lname) 
+    Person search() 
     {
+        string fname, lname;
+        cout<<"Enter first and last name to search:"<<endl;
+        cin>>fname>>lname;
         x = find(x, fname, lname);
         return x->data;
     }
@@ -281,8 +284,53 @@ Person addContact() // adds contact to myContacts
     return newPerson;
 }
 
-void findContact()
+void menu(Book bstBook)
 {
+    int choice;
+    int exit = 0;
+
+    do
+    {
+        cout<<"USER MENU"<<endl;
+        cout<<"-------------------"<<endl;
+        cout<<"1. Add User"<<endl;
+        cout<<"2. Delete User"<<endl;
+        cout<<"3. Find User"<<endl;
+        cout<<"4. Edit User"<<endl;
+        cout<<"5. Display All Users"<<endl;
+        cout<<"6. Quit"<<endl;
+
+        cin>>choice;
+        
+        if (choice < 1 || choice > 6)
+        {
+            cout<<"Not a valid choice."<<endl;
+            exit = 0;
+        }
+        else
+        {
+            switch(choice)
+            {
+                case 1:
+                    Person tmpPerson = addContact();
+                    bstBook.insert(tmpPerson);
+                    cout<<"User Added!"<<endl;
+                case 2:
+                    //TODO
+                case 3:
+                    Person tmpPerson = bstBook.search();
+                    cout<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<" "<<tmpPerson.getMnumber()<<endl;
+                case 4:
+                    //TODO
+                case 5:
+                    cout<<"Last Name"<<"        "<<"First Name"<<"      "<<"Number"<<endl;
+                    bstBook.display();
+                case 6:
+                    exit = 1;
+
+            }
+        }
+    }while (exit == 0);
 
 }
 
@@ -290,16 +338,5 @@ int main()
 {
     Book bstBook;
 
-    for (int i = 0; i < 5; i++)
-    {
-        Person tmpPerson = addContact();
-        bstBook.insert(tmpPerson);
-    }
-    Person newPerson;
-    newPerson.setFname("Nathan");
-    newPerson.setLname("Sucher");
-    newPerson.setMnumber("6");
-    bstBook.search("A", "C");
-    
-    bstBook.display();
+    menu(bstBook);
 }
