@@ -113,44 +113,20 @@ class Book
         }
     }
 
-    node* findMax(node* root) {
-        if(root == NULL)
-        {
-            return NULL;
-        }
-        else if(root->right == NULL)
-        {
-            return root;
-        }
-        else
-        {
-            return findMax(root->right);
-        }
-    }
-
     node* remove(node* root, string name) 
     {
         if (root == NULL)
         {
             return root; 
         } 
-  
-        // If the key to be deleted is smaller than the root's key, 
-        // then it lies in left subtree 
         if (name < (root->data.getLname() + root->data.getFname())) 
         {
             root->left = remove(root->left, name); 
         }
-        // If the key to be deleted is greater than the root's key, 
-        // then it lies in right subtree 
         else if (name > (root->data.getLname() + root->data.getFname())) 
         {
             root->right = remove(root->right, name); 
         }
-        
-    
-        // if key is same as root's key, then This is the node 
-        // to be deleted 
         else
         { 
             // node with only one child or no child 
@@ -166,15 +142,11 @@ class Book
                 free(root); 
                 return temp; 
             } 
-    
-            // node with two children: Get the inorder successor (smallest 
-            // in the right subtree) 
+     
             struct node* temp = findMin(root->right); 
     
-            // Copy the inorder successor's content to this node 
             root->data = temp->data; 
     
-            // Delete the inorder successor 
             root->right = remove(root->right, (temp->data.getLname() + temp->data.getFname())); 
         } 
         return root; 
@@ -183,10 +155,29 @@ class Book
     void inorder(node* root) 
     {
         if(root == NULL)
+        {
             return;
+        }
         inorder(root->left);
         cout << root->data.getLname() << "      "<< root->data.getFname() <<"       "<< root->data.getMnumber() << endl;
         inorder(root->right);
+    }
+
+    void inorder(node* root, string file)
+    {
+        ofstream myfile;
+        if (!myfile.is_open())
+        {
+            myfile.open(file);
+        }
+
+        if(root == NULL)
+        {
+            return;
+        }
+        inorder(root->left, file);
+        myfile << root->data.getLname() << "      "<< root->data.getFname() <<"       "<< root->data.getMnumber() << endl;
+        inorder(root->right, file);
     }
 
     node* find(node* root, string name) 
@@ -238,6 +229,15 @@ public:
     {
         inorder(x);
         cout << endl;
+    }
+
+    void write()
+    {
+        string file;
+        cout<<"Enter the file to write to: ";
+        cin>>file;
+        inorder(x, file);
+        cout<<endl;
     }
 
     Person search() 
@@ -298,7 +298,7 @@ void menu(Book bstBook)
 
         cin>>choice;
         
-        if (choice != 1 || choice != 2 || choice != 3 || choice != 4 || choice != 5 || choice != 6 || choice != 7 || choice != 8)
+        if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7 && choice != 8)
         {
             cout<<"Not a valid choice."<<endl;
             exit = 0;
@@ -328,7 +328,7 @@ void menu(Book bstBook)
                     bstBook.display();
                     break;
                 case 6:
-                    //TODO
+                    bstBook.write();
                     break;
                 case 7:
                     //TODO
