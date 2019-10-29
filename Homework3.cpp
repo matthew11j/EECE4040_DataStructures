@@ -166,7 +166,7 @@ class Book
     void writeContacts(node* root, string filename)
     {
         vector<string> vect;
-        BSTtoArray(root, vect);
+        BSTtoVect(root, vect);
         ofstream saveFile;
         if (!saveFile.is_open())
         {
@@ -183,26 +183,67 @@ class Book
         saveFile.close();
     }
 
-    // Converting a BST into an Array
-    void BSTtoArray(node* root, vector<string> &vect)
+    // Converting a BST into a Vector
+    void BSTtoVect(node* root, vector<string> &vect)
     {
         string contact;
         static int pos = 0;
         if(root == NULL) return;
 
-        BSTtoArray(root->left, vect);
+        BSTtoVect(root->left, vect);
         contact = root->data.getLname() + "      " + root->data.getFname() + "       " + root->data.getMnumber();
         vect.push_back(contact);
-        BSTtoArray(root->right, vect);
+        BSTtoVect(root->right, vect);
     }
 
-    // int treeSize(node* root) {
-    //   if(root == NULL) {
-    //     return 0;
-    //   } else {
-    //     return treeSize(root->left) + treeSize(root->right) + 1;
-    //   }
-    // }
+    void restore(node* root, string filename)
+    {
+        x = makeEmpty(x);
+        vector<string> vect;
+        string element;
+        ifstream readFile;
+        //readFile.open( filename.c_str() );
+        readFile.open( "read.txt" );
+        if (readFile.is_open())
+        {
+            int i = 0;
+            while (readFile >> element) {
+                vect.push_back(element);
+            }
+        }
+        readFile.close();
+
+        for (int i = 0; i < vect.size(); i++)
+        {
+            Person newPerson;
+            string delimiter = ",";
+            size_t pos = 0;
+            string token;
+            int number;
+            string str = vect.at(i);
+            for (int j = 0; j < 3; j++)
+            {
+                pos = str.find(delimiter);
+                token = str.substr(0, pos);
+                str.erase(0, pos + delimiter.length());
+                //cout << j << " : " << token << endl;
+                switch(j)
+                {
+                    case 0:
+                        newPerson.setFname(token);
+                        break;
+                    case 1:
+                        newPerson.setLname(token);
+                        break;
+                    case 2:
+                        newPerson.setMnumber(token);
+                        break;
+                }
+            }
+            cout << newPerson.getLname() << ","<< newPerson.getFname() <<","<< newPerson.getMnumber() << endl;
+            x = insert(newPerson, x);
+        }
+    }
 
     node* find(node* root, string name)
     {
@@ -260,8 +301,19 @@ public:
         string file;
         cout<<"Enter the name of the text file to write to: ";
         cin>>file;
-        file = file + ".txt";
         writeContacts(x, file);
+        cout<<endl;
+    }
+
+    void restore()
+    {
+        string file;
+        cout<<"Enter the name of the text file to read from: " << endl;
+        cout<<"Contact info must be space/enter separated and " << endl;
+        cout<<"Ex: firstname,lastname,mobile,"<< endl;
+        cout<<"    firstname,lastname,mobile,"<< endl;
+        cin>>file;
+        restore(x, file);
         cout<<endl;
     }
 
@@ -291,7 +343,7 @@ public:
 Person addContact() // adds contact to myContacts (Constructor)
 {
     string fname, lname, mnumber;
-    cout<<"Enter the first name, last name, and mobile of the contact you would like to add:"<< endl;
+    cout<<"Enter the first name, last name, and mobile of the contact you would like to add:" << endl;
     cout<<"Ex:'firstname lastname mobile'"<< endl;
     cin>>fname>>lname>>mnumber;
     Person newPerson;
@@ -320,7 +372,7 @@ void menu(Book bstBook)
         cout<<"5. Display All Users"<<endl;
         cout<<"6. Save to Text File"<<endl;
         cout<<"7. Restore from Text File"<<endl;
-        cout<<"8. Quit"<<endl;
+        cout<<"8. Quit"<<endl<<endl;
 
         cin>>choice;
 
@@ -357,7 +409,7 @@ void menu(Book bstBook)
                     bstBook.writeContacts();
                     break;
                 case 7:
-                    //bstBook.restore();
+                    bstBook.restore();
                     break;
                 case 8:
                     exit = 1;
