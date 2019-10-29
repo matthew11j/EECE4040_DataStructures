@@ -271,8 +271,8 @@ public:
         cout<<"Enter first and last name to search: ";
         cin>>fname>>lname;
         string person = lname + fname;
-        x = find(x, person);
-        return x->data;
+        node* tmp = find(x, person);
+        return tmp->data;
     }
 
     void edit()
@@ -281,10 +281,10 @@ public:
         cout<<"Enter first and last name to edit: ";
         cin>>fname>>lname;
         string person = lname + fname;
-        x = find(x, person);
+        node* tmp = find(x, person);
         cout<<"Enter the new number: ";
         cin>>mnumber;
-        x->data.setMnumber(mnumber);
+        tmp->data.setMnumber(mnumber);
     }
 };
 
