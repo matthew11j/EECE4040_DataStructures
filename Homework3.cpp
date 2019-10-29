@@ -129,7 +129,6 @@ class Book
         }
         else
         {
-            // node with only one child or no child
             if (root->left == NULL)
             {
                 struct node *temp = root->right;
@@ -191,7 +190,7 @@ class Book
         if(root == NULL) return;
 
         BSTtoVect(root->left, vect);
-        contact = root->data.getLname() + "      " + root->data.getFname() + "       " + root->data.getMnumber();
+        contact = root->data.getLname() + "," + root->data.getFname() + "," + root->data.getMnumber() + ",";
         vect.push_back(contact);
         BSTtoVect(root->right, vect);
     }
@@ -203,7 +202,7 @@ class Book
         string element;
         ifstream readFile;
         //readFile.open( filename.c_str() );
-        readFile.open( "read.txt" );
+        readFile.open( filename );
         if (readFile.is_open())
         {
             int i = 0;
@@ -288,6 +287,7 @@ public:
         cin>>fname>>lname;
         string person = lname + fname;
         x = remove(x, person);
+        cout<<"User Deleted."<<endl;
     }
 
     void display()
@@ -353,75 +353,82 @@ Person addContact() // adds contact to myContacts (Constructor)
     return newPerson;
 }
 
-void menu(Book bstBook)
+class UserInterface
 {
-    int choice;
-    int exit = 0;
-    Person tmpPerson;
+  Book bstBook;
 
-    do
-    {
-        cout<<endl;
-        cout<<"-------------------"<<endl;
-        cout<<"USER MENU"<<endl;
-        cout<<"-------------------"<<endl;
-        cout<<"1. Add User"<<endl;
-        cout<<"2. Delete User"<<endl;
-        cout<<"3. Find User"<<endl;
-        cout<<"4. Edit User"<<endl;
-        cout<<"5. Display All Users"<<endl;
-        cout<<"6. Save to Text File"<<endl;
-        cout<<"7. Restore from Text File"<<endl;
-        cout<<"8. Quit"<<endl<<endl;
+public:
+  void menu()
+  {
+      int choice;
+      int exit = 0;
+      Person tmpPerson;
 
-        cin>>choice;
+      do
+      {
+          cout<<endl;
+          cout<<"-------------------"<<endl;
+          cout<<"USER MENU"<<endl;
+          cout<<"-------------------"<<endl;
+          cout<<"1. Add User"<<endl;
+          cout<<"2. Delete User"<<endl;
+          cout<<"3. Find User"<<endl;
+          cout<<"4. Edit User"<<endl;
+          cout<<"5. Display All Users"<<endl;
+          cout<<"6. Save to Text File"<<endl;
+          cout<<"7. Restore from Text File"<<endl;
+          cout<<"8. Quit"<<endl<<endl;
 
-        if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7 && choice != 8)
-        {
-            cout<<"Not a valid choice."<<endl;
-            exit = 0;
-        }
-        else
-        {
-            switch(choice)
-            {
-                case 1:
-                    tmpPerson = addContact();
-                    bstBook.insert(tmpPerson);
-                    cout<<"User Added!"<<endl;
-                    break;
-                case 2:
-                    bstBook.remove();
-                    break;
-                case 3:
-                    tmpPerson = bstBook.search();
-                    cout<<"User: "<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<"     "<<tmpPerson.getMnumber()<<endl;
-                    break;
-                case 4:
-                    bstBook.edit();
-                    break;
-                case 5:
-                    cout<<"Last Name"<<"     "<<"First Name"<<"   "<<"Number"<<endl;
-                    cout<<"---------------------------------------------------------"<<endl;
-                    bstBook.display();
-                    break;
-                case 6:
-                    bstBook.writeContacts();
-                    break;
-                case 7:
-                    bstBook.restore();
-                    break;
-                case 8:
-                    exit = 1;
-                    break;
-            }
-        }
-    }while (exit == 0);
+          cin>>choice;
 
-}
+          if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7 && choice != 8)
+          {
+              cout<<"Not a valid choice."<<endl;
+              exit = 0;
+          }
+          else
+          {
+              switch(choice)
+              {
+                  case 1:
+                      tmpPerson = addContact();
+                      bstBook.insert(tmpPerson);
+                      cout<<"User Added!"<<endl;
+                      break;
+                  case 2:
+                      bstBook.remove();
+                      break;
+                  case 3:
+                      tmpPerson = bstBook.search();
+                      cout<<"User: "<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<"     "<<tmpPerson.getMnumber()<<endl;
+                      break;
+                  case 4:
+                      bstBook.edit();
+                      break;
+                  case 5:
+                      cout<<"Last Name"<<"     "<<"First Name"<<"   "<<"Number"<<endl;
+                      cout<<"---------------------------------------------------------"<<endl;
+                      bstBook.display();
+                      break;
+                  case 6:
+                      bstBook.writeContacts();
+                      break;
+                  case 7:
+                      bstBook.restore();
+                      break;
+                  case 8:
+                      exit = 1;
+                      break;
+              }
+          }
+      }while (exit == 0);
+
+  }
+};
+
 
 int main()
 {
-    Book bstBook;
-    menu(bstBook);
+    UserInterface ui;
+    ui.menu();
 }
