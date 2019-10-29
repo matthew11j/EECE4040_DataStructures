@@ -47,7 +47,7 @@ class Person
 
 class Book
 {
-    struct node 
+    struct node
     {
         Person data;
         node* left;
@@ -113,46 +113,46 @@ class Book
         }
     }
 
-    node* remove(node* root, string name) 
+    node* remove(node* root, string name)
     {
         if (root == NULL)
         {
-            return root; 
-        } 
-        if (name < (root->data.getLname() + root->data.getFname())) 
-        {
-            root->left = remove(root->left, name); 
+            return root;
         }
-        else if (name > (root->data.getLname() + root->data.getFname())) 
+        if (name < (root->data.getLname() + root->data.getFname()))
         {
-            root->right = remove(root->right, name); 
+            root->left = remove(root->left, name);
+        }
+        else if (name > (root->data.getLname() + root->data.getFname()))
+        {
+            root->right = remove(root->right, name);
         }
         else
-        { 
-            // node with only one child or no child 
-            if (root->left == NULL) 
-            { 
-                struct node *temp = root->right; 
-                free(root); 
-                return temp; 
-            } 
-            else if (root->right == NULL) 
-            { 
-                struct node *temp = root->left; 
-                free(root); 
-                return temp; 
-            } 
-     
-            struct node* temp = findMin(root->right); 
-    
-            root->data = temp->data; 
-    
-            root->right = remove(root->right, (temp->data.getLname() + temp->data.getFname())); 
-        } 
-        return root; 
+        {
+            // node with only one child or no child
+            if (root->left == NULL)
+            {
+                struct node *temp = root->right;
+                free(root);
+                return temp;
+            }
+            else if (root->right == NULL)
+            {
+                struct node *temp = root->left;
+                free(root);
+                return temp;
+            }
+
+            struct node* temp = findMin(root->right);
+
+            root->data = temp->data;
+
+            root->right = remove(root->right, (temp->data.getLname() + temp->data.getFname()));
+        }
+        return root;
     }
 
-    void inorder(node* root) 
+    void inorder(node* root)
     {
         if(root == NULL)
         {
@@ -163,24 +163,48 @@ class Book
         inorder(root->right);
     }
 
-    void inorder(node* root, string file)
+    void writeContacts(node* root, string filename)
     {
-        ofstream myfile;
-        if (!myfile.is_open())
+        vector<string> vect;
+        BSTtoArray(root, vect);
+        ofstream saveFile;
+        if (!saveFile.is_open())
         {
-            myfile.open(file);
+            saveFile.open( filename.c_str() );
         }
 
         if(root == NULL)
         {
             return;
         }
-        inorder(root->left, file);
-        myfile << root->data.getLname() << "      "<< root->data.getFname() <<"       "<< root->data.getMnumber() << endl;
-        inorder(root->right, file);
+        for (int i = 0; i < vect.size(); i++) {
+          saveFile << vect[i] << '\n';
+        }
+        saveFile.close();
     }
 
-    node* find(node* root, string name) 
+    // Converting a BST into an Array
+    void BSTtoArray(node* root, vector<string> &vect)
+    {
+        string contact;
+        static int pos = 0;
+        if(root == NULL) return;
+
+        BSTtoArray(root->left, vect);
+        contact = root->data.getLname() + "      " + root->data.getFname() + "       " + root->data.getMnumber();
+        vect.push_back(contact);
+        BSTtoArray(root->right, vect);
+    }
+
+    // int treeSize(node* root) {
+    //   if(root == NULL) {
+    //     return 0;
+    //   } else {
+    //     return treeSize(root->left) + treeSize(root->right) + 1;
+    //   }
+    // }
+
+    node* find(node* root, string name)
     {
         if(root == NULL)
         {
@@ -201,7 +225,7 @@ class Book
     }
 
 public:
-    Book() 
+    Book()
     {
         x = NULL;
     }
@@ -216,7 +240,7 @@ public:
         x = insert(tmpPerson, x);
     }
 
-    void remove() 
+    void remove()
     {
         string fname, lname;
         cout<<"Enter first and last name to remove: ";
@@ -225,22 +249,23 @@ public:
         x = remove(x, person);
     }
 
-    void display() 
+    void display()
     {
         inorder(x);
         cout << endl;
     }
 
-    void write()
+    void writeContacts()
     {
         string file;
-        cout<<"Enter the file to write to: ";
+        cout<<"Enter the name of the text file to write to: ";
         cin>>file;
-        inorder(x, file);
+        file = file + ".txt";
+        writeContacts(x, file);
         cout<<endl;
     }
 
-    Person search() 
+    Person search()
     {
         string fname, lname;
         cout<<"Enter first and last name to search: ";
@@ -263,10 +288,11 @@ public:
     }
 };
 
-Person addContact() // adds contact to myContacts
+Person addContact() // adds contact to myContacts (Constructor)
 {
     string fname, lname, mnumber;
     cout<<"Enter the first name, last name, and mobile of the contact you would like to add:"<< endl;
+    cout<<"Ex:'firstname lastname mobile'"<< endl;
     cin>>fname>>lname>>mnumber;
     Person newPerson;
     newPerson.setFname(fname);
@@ -297,7 +323,7 @@ void menu(Book bstBook)
         cout<<"8. Quit"<<endl;
 
         cin>>choice;
-        
+
         if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 6 && choice != 7 && choice != 8)
         {
             cout<<"Not a valid choice."<<endl;
@@ -328,10 +354,10 @@ void menu(Book bstBook)
                     bstBook.display();
                     break;
                 case 6:
-                    bstBook.write();
+                    bstBook.writeContacts();
                     break;
                 case 7:
-                    //TODO
+                    //bstBook.restore();
                     break;
                 case 8:
                     exit = 1;
