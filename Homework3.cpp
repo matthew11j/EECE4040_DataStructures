@@ -229,10 +229,10 @@ class Book
                 switch(j)
                 {
                     case 0:
-                        newPerson.setFname(token);
+                        newPerson.setLname(token);
                         break;
                     case 1:
-                        newPerson.setLname(token);
+                        newPerson.setFname(token);
                         break;
                     case 2:
                         newPerson.setMnumber(token);
@@ -264,6 +264,26 @@ class Book
         }
     }
 
+    bool checkForValue(node* root, string name)
+    {
+        while (root != NULL)
+        {
+            if (name > (root->data.getLname() + root->data.getFname()))
+            {
+                root = root->right;
+            }
+            else if (name < (root->data.getLname() + root->data.getFname()))
+            {
+                root = root->left;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 public:
     Book()
     {
@@ -286,8 +306,15 @@ public:
         cout<<"Enter first and last name to remove: ";
         cin>>fname>>lname;
         string person = lname + fname;
-        x = remove(x, person);
-        cout<<"User Deleted."<<endl;
+        if (isInTree(person))
+        {
+            x = remove(x, person);
+            cout<<"User Deleted."<<endl;
+        }
+        else
+        {
+            cout<<"User Does Not Exist."<<endl;
+        }
     }
 
     void display()
@@ -317,14 +344,21 @@ public:
         cout<<endl;
     }
 
-    Person search()
+    void search()
     {
         string fname, lname;
         cout<<"Enter first and last name to search: ";
         cin>>fname>>lname;
         string person = lname + fname;
-        node* tmp = find(x, person);
-        return tmp->data;
+        if (isInTree(person))
+        {
+            node* tmpPerson = find(x, person);
+            cout<<"User: "<<tmpPerson->data.getLname()<<", "<<tmpPerson->data.getFname()<<"     "<<tmpPerson->data.getMnumber()<<endl;
+        }
+        else
+        {
+            cout<<"User Does Not Exist."<<endl;
+        }
     }
 
     void edit()
@@ -333,11 +367,24 @@ public:
         cout<<"Enter first and last name to edit: ";
         cin>>fname>>lname;
         string person = lname + fname;
-        node* tmp = find(x, person);
-        cout<<"Enter the new number: ";
-        cin>>mnumber;
-        tmp->data.setMnumber(mnumber);
+        if (isInTree(person))
+        {
+            node* tmp = find(x, person);
+            cout<<"Enter the new number: ";
+            cin>>mnumber;
+            tmp->data.setMnumber(mnumber);
+        }
+        else
+        {
+            cout<<"User Does Not Exist."<<endl;
+        }
     }
+
+    bool isInTree(string name)
+    {
+        return checkForValue(x, name);
+    }
+
 };
 
 Person addContact() // adds contact to myContacts (Constructor)
@@ -399,8 +446,7 @@ public:
                       bstBook.remove();
                       break;
                   case 3:
-                      tmpPerson = bstBook.search();
-                      cout<<"User: "<<tmpPerson.getLname()<<", "<<tmpPerson.getFname()<<"     "<<tmpPerson.getMnumber()<<endl;
+                      bstBook.search();
                       break;
                   case 4:
                       bstBook.edit();
