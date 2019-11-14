@@ -1,121 +1,98 @@
 #include <iostream>
-#include <list>
-#include <stack>
-
+#include <cstdlib>
 using namespace std;
 
-struct node
-  {
-    int data;
-    node *next;
-  };
-
-class Digraph
+struct AdjListNode
 {
-    int V;
-    list<int> *adj;
-
-public:
-    Digraph(int V)
-    {
-        this->V = V;
-        adj = new list<int>[V];
-    }
-
-    // function to add an edge to graph
-    void addEdge(int u, int v)
-    {
-      //WIP
-        //adj[u].push_back(v);
-        node *head = adj[u];
-
-        node *temp = new node;
-        temp->data = v;
-        temp->next = NULL;
-        if (head == NULL)
-        {
-          head = temp;
-          tail = temp;
-          temp = NULL:
-        }
-        else
-        {
-          tail->next = temp;
-          tail = temp;
-        }
-    }
-
-    void topologicalSortUtil(int v, bool visited[], stack<int> &Stack)
-    {
-        // Mark the current node as visited.
-        visited[v] = true;
-
-        // Recur for all the vertices adjacent to this vertex
-        list<int>::iterator i;
-        for (i = adj[v].begin(); i != adj[v].end(); ++i)
-            if (!visited[*i])
-                topologicalSortUtil(*i, visited, Stack);
-
-        // Push current vertex to stack which stores result
-        Stack.push(v);
-    }
-
-    // prints a Topological Sort of the complete graph
-    void topologicalSort()
-    {
-        stack<int> Stack;
-
-        // Mark all the vertices as not visited
-        bool *visited = new bool[V];
-        for (int i = 0; i < V; i++)
-            visited[i] = false;
-
-        // Call the recursive helper function to store Topological
-        // Sort starting from all vertices one by one
-        for (int i = 0; i < V; i++)
-          if (visited[i] == false)
-            topologicalSortUtil(i, visited, Stack);
-
-        // Print contents of stack
-        while (Stack.empty() == false)
-        {
-            cout << Stack.top() << " ";
-            Stack.pop();
-        }
-    }
-
-    // Displays Digraph
-    void displayDigraph()
-    {
-        for (int u = 0; u < V; ++u)
-        {
-            cout << "\n Vertex " << u << ": head";
-            for (int v : adj[u])
-               cout << " -> " << v;
-        }
-        printf("\n");
-    }
-
-    void acyclicCheck()
-    {
-      // TODO
-    }
+    int data;
+    struct AdjListNode* next;
 };
 
+struct AdjList
+{
+    struct AdjListNode *head;
+};
+
+/*
+ * Class Graph
+ */
+class Graph
+{
+    private:
+        int V;
+        AdjList* array;
+    public:
+        Graph(int V)
+        {
+            this->V = V;
+            array = new AdjList [V];		 //total vertices
+            for (int i = 0; i < V; ++i)
+                array[i].head = NULL;  		//linking head of all vertices (array) to NULL ,it doesn't store any number only stores HEAD
+        }
+
+        /*
+         * Adding Edge to Graph
+         */
+        void addEdge(int src, int dest)
+        {
+        										// 0-->2
+        										// 1-->NULL
+        										// 2-->0
+
+          // Add an edge from src to dest.  A new node is added to the adjacency
+    	// list of src.  The node is added at the begining
+
+        	AdjListNode* newNode = new AdjListNode;  //newNode stores both data(dest) and *next pointer
+            newNode->data = dest;					//consider src = 0 and dest = 1		0<----->1 for undirected graph
+            newNode->next = NULL;		//  1----->NULL
+            										//adding nodes at beginning of each list just like in linked list//
+            newNode->next = array[src].head;		//*next(of dst) storing address of head->next node i.e.. 1--->2 (first node from head)
+            array[src].head = newNode;				//	0-->1-->2
+
+			 // Since graph is undirected, add an edge from dest to src also
+			newNode = new AdjListNode; 				 //now newNode storing data(src)
+            newNode->data = src;
+            newNode->next = NULL;				// 0--->NULL
+
+            newNode->next = array[dest].head;	// 0---->NULL (bcuz.. 1-->NULL)
+            array[dest].head = newNode;			// 1---->0
+        }
+        /*
+         * Print the graph
+         */
+        void printGraph()
+        {
+            int v;
+            for (v = 0; v < V; ++v)
+            {
+                AdjListNode* tmp = array[v].head;		//tmp has the address of (0,1..)vertex head
+                cout<<"\n Adjacency list of vertex "<<v<<"\n head ";
+                while (tmp)
+                {
+                    cout<<"-> "<<tmp->data;
+                    tmp = tmp->next;
+                }
+                cout<<endl;
+            }
+        }
+};
+
+/*
+ * Main
+ */
 int main()
 {
-    // Create a graph given in the above diagram
-    Digraph dg(6);
-    dg.addEdge(5, 2);
-    dg.addEdge(5, 0);
-    dg.addEdge(4, 0);
-    dg.addEdge(4, 1);
-    dg.addEdge(2, 3);
-    dg.addEdge(3, 1);
-    dg.displayDigraph();
+    Graph gh(5);
+    gh.addEdge(0, 1);
+    gh.addEdge(0, 4);
+    gh.addEdge(1, 2);
+    gh.addEdge(1, 3);
+    gh.addEdge(1, 4);
+    gh.addEdge(2, 3);
+    gh.addEdge(3, 4);
 
-    //cout << "Following is a Topological Sort of the given graph \n";
-    //dg.topologicalSort();
+    // print the adjacency list representation of the above graph
+    gh.printGraph();
 
     return 0;
 }
