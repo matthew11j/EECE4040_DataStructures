@@ -28,7 +28,7 @@ class Digraph
     public:
         Digraph()
         {
-
+          //Default Constructor not used
         }
 
         ~Digraph()
@@ -58,7 +58,6 @@ class Digraph
               }
               temp = temp->next;
             }
-
             node* temp2 = new node;
             temp2->data = to;
             temp2->next = NULL;
@@ -97,18 +96,19 @@ class Digraph
             }
         }
 
-        void SortUtil(int vertex, bool visited[], stack<int>& Stack)
+        void sortRecursive(int v, bool visited[], stack<int>& Stack)
         {
           bool breakOut = false;
-        	visited[vertex] = true;
+          // Mark the node as visited
+        	visited[v] = true;
 
-          node* head = array[vertex].head;
+          node* head = array[v].head;
           node* temp = new node;
           temp = head;
 
           if (temp == NULL)
           {
-          	Stack.push(vertex);
+          	Stack.push(v);
             return;
           }
           while (temp != NULL && !breakOut)
@@ -116,7 +116,7 @@ class Digraph
             int i = temp->data;
             if (!visited[i])
             {
-              SortUtil(i, visited, Stack);
+              sortRecursive(i, visited, Stack);
             }
             if (temp->next == NULL)
             {
@@ -128,51 +128,48 @@ class Digraph
             }
           }
 
-        	// Push current vertex to stack which stores result
-        	Stack.push(vertex);
+        	Stack.push(v);
         }
 
         void topologicalSort()
         {
         	stack<int> Stack;
-        	int num;
-        	int count = 1;
+        	int val;
+        	int cnt = 1;
 
-        	// Mark all the vertices as not visited
+        	// All vertices begin unvisited
         	bool* visited = new bool[V];
         	for (int i = 0; i < V; i++)
         	{
         		visited[i] = false;
         	}
 
-        	// Call the recursive helper function to store Topological
-        	// Sort starting from all vertices one by one
         	for (int i = 0; i < V; i++)
         	{
         		if (visited[i] == false)
         		{
-        			SortUtil(i, visited, Stack);
+        			sortRecursive(i, visited, Stack);
         		}
         	}
           cout<<"**************Topological Sort**************"<<endl;
           cout<<"Tasks in Order:"<<endl;
         	while (Stack.empty() == false)
         	{
-        		num = Stack.top();
-        		cout << count << ")" << num << endl;
+        		val = Stack.top();
+        		cout<<cnt<<")"<<val<<endl;
         		Stack.pop();
-        		count++;
+        		cnt++;
         	}
         }
 
-        bool CycleUtil(int vertex, bool visited[], bool* rs)
+        bool cycleRecursive(int v, bool visited[], bool* recursive)
         {
-        	if (visited[vertex] == false)
+        	if (visited[v] == false)
         	{
-        		// Mark the current node as visited and part of recursion stack
-        		visited[vertex] = true;
-        		rs[vertex] = true;
-            node* head = array[vertex].head;
+        		// Mark the node as visited
+        		visited[v] = true;
+        		recursive[v] = true;
+            node* head = array[v].head;
             node* temp = new node;
             temp = head;
 
@@ -180,24 +177,24 @@ class Digraph
             {
               int i = temp->data;
               bool x = !visited[i];
-              if (!visited[i] && CycleUtil(i, visited, rs))
+              if (!visited[i] && cycleRecursive(i, visited, recursive))
               {
                 return true;
               }
-              else if (rs[i])
+              else if (recursive[i])
               {
                 return true;
               }
               temp = temp->next;
             }
         	}
-        	rs[vertex] = false;  // remove the vertex from recursion stack
+        	recursive[v] = false;
         	return false;
         }
 
         bool cyclicCheck()
         {
-        	// Mark all the vertices as not visited and not part of recursion
+        	// All vertices begin unvisited
         	bool* visited = new bool[V];
         	bool* recStack = new bool[V];
         	for (int i = 0; i < V; i++)
@@ -206,11 +203,9 @@ class Digraph
         		recStack[i] = false;
         	}
 
-        	// Call the recursive helper function to detect cycle in different
-        	// DFS trees
         	for (int i = 0; i < V; i++)
         	{
-        		if (CycleUtil(i, visited, recStack))
+        		if (cycleRecursive(i, visited, recStack))
         		{
         			return true;
         		}
@@ -239,7 +234,6 @@ class Digraph
 
 void displayTaskList(string tasks[], int cnt) {
   int size = cnt;
-	//size = sizeof(tasks);
 	if (size == 0)
 	{
 		cout << "Task list is empty." << endl;
@@ -249,7 +243,7 @@ void displayTaskList(string tasks[], int cnt) {
 		cout << "---Task List---" << endl;
 		for (int i = 0; i < size; i++)
 		{
-			cout << i << ") " << tasks[i] << endl;
+			cout<<i<<") "<<tasks[i]<<endl;
 		}
 	}
 }
@@ -324,7 +318,7 @@ int main()
       cout<<endl;
 				if (menuChoice == "1")
 				{
-					cout<<"Enter the Order Relation for a task"<<endl;
+					cout<<"Enter the Order Relation you want to add"<<endl;
           cout<<"i.e., If \'Task 3\' precedes \'Task 1\' then "<<endl;
           cout<<"From: 3"<<endl;
           cout<<"To: 1"<<endl;
@@ -388,7 +382,6 @@ int main()
           else
           {
             dg.topologicalSort();
-
           }
 				}
         else if (menuChoice == "5")
@@ -397,9 +390,8 @@ int main()
 				}
         else
         {
-          cout<<"Enter a correct value."<<endl;
+          cout<<"Input is invalid."<<endl;
         }
     }
-
     return 0;
 }
