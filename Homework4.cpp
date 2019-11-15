@@ -46,23 +46,29 @@ class Digraph
 
         void addEdge(int from, int to)
         {
-
             node* head = array[from].head;
         	  node* temp = new node;
+            temp = head;
+            while (temp != NULL)
+            {
+              if (temp->data == to)
+              {
+                cout<<"Edge already exists"<<endl;
+                return;
+              }
+              temp = temp->next;
+            }
 
-            temp->data = to;
-            temp->next = NULL;
-            temp->next = array[from].head;
-            array[from].head = temp;
+            node* temp2 = new node;
+            temp2->data = to;
+            temp2->next = NULL;
+            temp2->next = array[from].head;
+            array[from].head = temp2;
         }
 
         void deleteEdge(int from, int to)
         {
             node* head = array[from].head;
-            if (head == NULL)
-            {
-              cout<<"Edge does not exist"<<endl;
-            }
             node* temp = new node;
             node* prev = new node;
             node* next = new node;
@@ -87,7 +93,7 @@ class Digraph
             }
             if (!nodeDeleted)
             {
-               cout<<"Edge does not exist"<<endl;
+               cout<<"Edge not found"<<endl;
             }
         }
 
@@ -126,7 +132,7 @@ class Digraph
         	Stack.push(vertex);
         }
 
-        void topologicalsort()
+        void topologicalSort()
         {
         	stack<int> Stack;
         	int num;
@@ -148,6 +154,8 @@ class Digraph
         			SortUtil(i, visited, Stack);
         		}
         	}
+          cout<<"**************Topological Sort**************"<<endl;
+          cout<<"Tasks in Order:"<<endl;
         	while (Stack.empty() == false)
         	{
         		num = Stack.top();
@@ -187,7 +195,7 @@ class Digraph
         	return false;
         }
 
-        bool acyclicCheck()
+        bool cyclicCheck()
         {
         	// Mark all the vertices as not visited and not part of recursion
         	bool* visited = new bool[V];
@@ -212,6 +220,7 @@ class Digraph
 
         void displayDigraph()
         {
+            cout<<"*****************************"<<endl;
             int v;
             for (v = 0; v < V; ++v)
             {
@@ -224,27 +233,173 @@ class Digraph
                 }
                 cout<<endl;
             }
+            cout<<"*****************************"<<endl;
         }
 };
 
+void displayTaskList(string tasks[], int cnt) {
+  int size = cnt;
+	//size = sizeof(tasks);
+	if (size == 0)
+	{
+		cout << "Task list is empty." << endl;
+	}
+	else
+	{
+		cout << "---Task List---" << endl;
+		for (int i = 0; i < size; i++)
+		{
+			cout << i << ") " << tasks[i] << endl;
+		}
+	}
+}
+
+bool validString(string input)
+{
+	for (int i = 0; i < input.length(); i++)
+	{
+		if (!isdigit(input[i]))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool validEntry(int from, int to, int cnt)
+{
+  if ((from >= 0 && from <= cnt) && (to >= 0 && to <= cnt))
+  {
+    return true;
+  }
+  cout<<"One of your entries is invalid."<<endl;
+  return false;
+}
+
+void clearScreen()
+{
+  int n;
+  for (n = 0; n < 10; n++)
+    cout<<"\n\n\n\n\n\n\n\n\n\n"<<endl;
+}
+
 int main()
 {
-    bool cyclic;
-    Digraph dg(5);
-    dg.addEdge(0, 1);
-    dg.addEdge(0, 4);
-    dg.addEdge(0, 3);
-    dg.addEdge(1, 2);
-    dg.addEdge(1, 3);
-    dg.addEdge(1, 4);
-    dg.addEdge(2, 3);
-    dg.addEdge(3, 4);
-    dg.displayDigraph();
-    //dg.deleteEdge(1, 3);
-    //dg.topologicalsort();
-    //dg.addEdge(4, 2);
-    cyclic = dg.acyclicCheck();
-    cout<<"Cyclic: "<<cyclic<<endl;
+    string tasks[50];
+    int taskFrom, taskTo;
+    string menuChoice, from, to, task;
+    bool recordTasks = true;
+    bool running = true;
+    bool cyclic = false;
+    int cnt = 0;
+    while (recordTasks)
+    {
+        cout<<"\nEnter task "<<cnt<<" here (enter 'stop' when you are done entering tasks):"<<endl;
+        //cin >> task;
+        getline(cin, task);
+        if (task == "stop")
+        {
+          recordTasks = false;
+          break;
+        }
+        else{
+          tasks[cnt] = task;
+          cnt++;
+        }
+    }
+    Digraph dg(cnt);
+    clearScreen();
+    while (running)
+    {
+      cout<<"\n\n\n"<<endl;
+  		displayTaskList(tasks, cnt);
+  		cout << "\n--------------------Menu----------------------" << endl;
+  		cout << "[1] Specify Order Relation (Add Edge)" << endl;
+  		cout << "[2] Delete Order Relation (Delete Edge)" << endl;
+  		cout << "[3] Display Adjacency List" << endl;
+      cout << "[4] Output Tasks in Order (Topological sort)" << endl;
+      cout << "[5] Quit"<< endl;
+      cout << "----------------------------------------------" << endl;
+  		cin >> menuChoice;
+      cout<<endl;
+				if (menuChoice == "1")
+				{
+					cout<<"Enter the Order Relation for a task"<<endl;
+          cout<<"i.e., If \'Task 3\' precedes \'Task 1\' then "<<endl;
+          cout<<"From: 3"<<endl;
+          cout<<"To: 1"<<endl;
+          cout<<"---------"<<endl;
+          cout<<"From: ";
+					cin >> from;
+          cout<<"To: ";
+          cin >> to;
+					cout << endl;
+					if (validString(from) && validString(to))
+					{
+            taskFrom = stoi(from);
+            taskTo = stoi(to);
+            if (validEntry(taskFrom, taskTo, cnt-1))
+            {
+  						dg.addEdge(taskFrom, taskTo);
+            }
+					}
+					else
+					{
+						cout<<"One of your entered values was not valid, Please try again."<<endl;
+					}
+				}
+				else if (menuChoice == "2")
+				{
+          cout<<"Enter the Order Relation you want to delete"<<endl;
+          cout<<"i.e., If Order Relation (3,1) is being deleted then"<<endl;
+          cout<<"from: 3"<<endl;
+          cout<<"to: 1"<<endl;
+          cout<<"---------"<<endl;
+          cout<<"From: ";
+					cin >> from;
+          cout<<"To: ";
+          cin >> to;
+					cout << endl;
+          if (validString(from) && validString(to))
+					{
+            taskFrom = stoi(from);
+            taskTo = stoi(to);
+            if (validEntry(taskFrom, taskTo, cnt-1))
+            {
+  						dg.deleteEdge(taskFrom, taskTo);
+            }
+					}
+					else
+					{
+						cout<<"One of your entered values was not valid, Please try again."<<endl;
+					}
+				}
+				else if (menuChoice == "3")
+				{
+					dg.displayDigraph();
+				}
+				else if (menuChoice == "4")
+        {
+					cyclic = dg.cyclicCheck();
+          if (cyclic)
+          {
+            cout<<"ERROR: The digraph is not acyclic."<<endl;
+          }
+          else
+          {
+            dg.topologicalSort();
+
+          }
+				}
+        else if (menuChoice == "5")
+				{
+					running = false;
+				}
+        else
+        {
+          cout<<"Enter a correct value."<<endl;
+        }
+    }
 
     return 0;
 }
