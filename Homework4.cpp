@@ -2,74 +2,98 @@
 #include <cstdlib>
 using namespace std;
 
-struct AdjListNode
+struct node
 {
     int data;
-    struct AdjListNode* next;
+    struct node* next;
 };
 
-struct AdjList
+struct nodeList
 {
-    struct AdjListNode *head;
+    struct node *head;
 };
 
-/*
- * Class Graph
- */
-class Graph
+class Digraph
 {
     private:
         int V;
-        AdjList* array;
+        nodeList* array;
     public:
-        Graph(int V)
+        Digraph()
+        {
+
+        }
+
+        ~Digraph()
+        {
+          delete[] array;
+        }
+
+        Digraph(int V)
         {
             this->V = V;
-            array = new AdjList [V];		 //total vertices
+            array = new nodeList [V];
             for (int i = 0; i < V; ++i)
-                array[i].head = NULL;  		//linking head of all vertices (array) to NULL ,it doesn't store any number only stores HEAD
+                array[i].head = NULL;
         }
 
-        /*
-         * Adding Edge to Graph
-         */
-        void addEdge(int src, int dest)
+        void addEdge(int from, int to)
         {
-        										// 0-->2
-        										// 1-->NULL
-        										// 2-->0
 
-          // Add an edge from src to dest.  A new node is added to the adjacency
-    	// list of src.  The node is added at the begining
+            node* head = array[from].head;
+        	  node* temp = new node;
 
-        	AdjListNode* newNode = new AdjListNode;  //newNode stores both data(dest) and *next pointer
-            newNode->data = dest;					//consider src = 0 and dest = 1		0<----->1 for undirected graph
-            newNode->next = NULL;		//  1----->NULL
-            										//adding nodes at beginning of each list just like in linked list//
-            newNode->next = array[src].head;		//*next(of dst) storing address of head->next node i.e.. 1--->2 (first node from head)
-            array[src].head = newNode;				//	0-->1-->2
-
-			 // Since graph is undirected, add an edge from dest to src also
-			newNode = new AdjListNode; 				 //now newNode storing data(src)
-            newNode->data = src;
-            newNode->next = NULL;				// 0--->NULL
-
-            newNode->next = array[dest].head;	// 0---->NULL (bcuz.. 1-->NULL)
-            array[dest].head = newNode;			// 1---->0
+            temp->data = to;
+            temp->next = NULL;
+            temp->next = array[from].head;
+            array[from].head = temp;
         }
-        /*
-         * Print the graph
-         */
-        void printGraph()
+
+        void deleteEdge(int from, int to)
+        {
+            node* head = array[from].head;
+            if (head == NULL)
+            {
+              cout<<"Edge does not exist"<<endl;
+            }
+            node* temp = new node;
+            node* prev = new node;
+            node* next = new node;
+            bool nodeDeleted = false;
+            temp = head;
+            while ((temp != NULL) && !nodeDeleted) {
+              if (temp->data == to)
+              {
+                next = temp->next;
+                if (temp == head)
+                {
+                  array[from].head = next;
+                }
+                else
+                {
+                  prev->next = next;
+                }
+                nodeDeleted = true;
+              }
+              prev = temp;
+              temp = temp->next;
+            }
+            if (!nodeDeleted)
+            {
+               cout<<"Edge does not exist"<<endl;
+            }
+        }
+
+        void displayDigraph()
         {
             int v;
             for (v = 0; v < V; ++v)
             {
-                AdjListNode* tmp = array[v].head;		//tmp has the address of (0,1..)vertex head
-                cout<<"\n Adjacency list of vertex "<<v<<"\n head ";
+                node* tmp = array[v].head;
+                cout<<"Vertex "<<v<<" head";
                 while (tmp)
                 {
-                    cout<<"-> "<<tmp->data;
+                    cout<<"->"<<tmp->data;
                     tmp = tmp->next;
                 }
                 cout<<endl;
@@ -77,22 +101,21 @@ class Graph
         }
 };
 
-/*
- * Main
- */
 int main()
 {
-    Graph gh(5);
-    gh.addEdge(0, 1);
-    gh.addEdge(0, 4);
-    gh.addEdge(1, 2);
-    gh.addEdge(1, 3);
-    gh.addEdge(1, 4);
-    gh.addEdge(2, 3);
-    gh.addEdge(3, 4);
-
-    // print the adjacency list representation of the above graph
-    gh.printGraph();
+    Digraph dg(5);
+    dg.addEdge(0, 1);
+    dg.addEdge(0, 4);
+    dg.addEdge(0, 3);
+    dg.addEdge(1, 2);
+    dg.addEdge(1, 3);
+    dg.addEdge(1, 4);
+    dg.addEdge(2, 3);
+    dg.addEdge(3, 4);
+    dg.displayDigraph();
+    //cout<<"\nDelete edge (1,3)"<<endl;
+    //dg.deleteEdge(1, 3);
+    //dg.displayDigraph();
 
     return 0;
 }
